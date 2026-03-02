@@ -1,16 +1,28 @@
 <!DOCTYPE html>
+<!--
+  Comic site: Don Midori vs Don Taichi
+  Single-page layout: Home (cover + description) | Comic (flip viewer) | About the Team (4 cards).
+  Nav links use #home, #comic, #team; scroll and hash scripts highlight the active section.
+-->
 <html lang="en">
 <head>
+  <!-- Character encoding and viewport for responsive layout -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comic — Don Midori vs Don Taichi</title>
+  <!-- Preconnect to Google Fonts for faster font loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Comic-style fonts: Bangers (titles), Archivo Black (placeholders), Comic Neue (body) -->
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Archivo+Black&family=Comic+Neue:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Body is flex column: header stays at top, main content grows, sections stack vertically and are scrollable -->
+
+  <!-- ========== HEADER: Sticky bar with app name and nav links ========== -->
   <header class="header">
+    <!-- App/site name; links to home; data-section used by nav script for active state -->
     <a href="#home" class="header__name" data-section="home">Don Midori vs Don Taichi</a>
     <nav class="nav">
       <a href="#home" class="nav-link nav-link--active" data-section="home">Home</a>
@@ -19,10 +31,13 @@
     </nav>
   </header>
 
+  <!-- ========== HOME SECTION: Landing with cover, description, CTA ========== -->
   <section class="home" id="home" aria-label="Home">
-    <!-- Character cutouts: add <img class="home__cutout home__cutout--top-left" src="..." alt=""> etc. for top-right, bottom-left, bottom-right -->
+    <!-- Optional: add character cutout images with classes home__cutout home__cutout--top-left, --top-right, --bottom-left, --bottom-right -->
     <div class="home__center">
+      <!-- Cover image; fallback placeholder shown if comic-images/cover.jpg fails to load -->
       <div class="home__cover-wrap">
+        <!-- onerror: if image 404/fails, hide img and show sibling placeholder (display:flex) -->
         <img class="home__cover" src="comic-images/cover.jpg" alt="Cover — Don Midori vs Don Taichi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="home__cover-placeholder" aria-hidden="true">Cover image</div>
       </div>
@@ -36,18 +51,24 @@
     </div>
   </section>
 
+  <!-- ========== COMIC SECTION: Page flip viewer and controls ========== -->
   <main class="main" id="comic">
+    <!-- Viewer: two "pages" (current + next) for 3D flip animation -->
     <div class="comic-viewer" id="comicViewer">
       <div class="comic-viewer__book">
+        <!-- Top/front page (animates away on Next, or stays when going Prev) -->
         <div class="comic-viewer__page comic-viewer__page--current" id="pageCurrent">
           <div class="comic-page" id="currentContent"></div>
         </div>
+        <!-- Back page (holds next or previous content during flips) -->
         <div class="comic-viewer__page comic-viewer__page--next" id="pageNext">
           <div class="comic-page" id="nextContent"></div>
         </div>
       </div>
     </div>
 
+    <!-- Page counter and Previous/Next buttons -->
+    <!-- Counter and buttons filled/updated by script.js -->
     <footer class="comic-controls">
       <span class="comic-controls__counter"><span id="currentPageNum">1</span> of <span id="totalPages">9</span></span>
       <button type="button" class="btn btn--prev" id="btnPrev" disabled aria-label="Previous page">Previous</button>
@@ -55,12 +76,14 @@
     </footer>
   </main>
 
+  <!-- ========== ABOUT THE TEAM: Four team cards in one row ========== -->
   <section class="team team--page" id="team" aria-label="About the Team">
     <div class="team__header">
       <h1 class="team__title">About the Team</h1>
       <p class="team__intro">The crew behind Don Midori vs Don Taichi.</p>
     </div>
     <div class="team__grid">
+      <!-- Team card 1: photo from teammate-images/; onerror shows "Photo" placeholder -->
       <article class="team-card">
         <div class="team-card__photo-wrap">
           <img class="team-card__photo" src="teammate-images/mily.jpg" alt="Mily" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
@@ -100,7 +123,13 @@
     </div>
   </section>
 
+  <!-- Comic viewer logic: page data, flip animations, prev/next -->
   <script src="script.js"></script>
+  <!--
+    Nav active state: (1) on hash change, set active from URL hash (#home, #comic, #team).
+    (2) On scroll, find which section is in view (offsetTop - headerOffset <= scrollY) and set active to that.
+    passive: true = scroll listener doesn't call preventDefault, better for scroll performance.
+  -->
   <script>
     (function () {
       function setActiveNav() {
@@ -117,9 +146,10 @@
           { id: 'comic', el: document.getElementById('comic') },
           { id: 'team', el: document.getElementById('team') }
         ];
-        var headerOffset = 80;
+        var headerOffset = 80; /* Approximate sticky header height for "in view" check */
         var scrollY = window.scrollY || window.pageYOffset;
         var current = 'home';
+        /* Last section whose top is above scroll position becomes "current" */
         sections.forEach(function (s) {
           if (s.el && s.el.offsetTop - headerOffset <= scrollY) current = s.id;
         });
