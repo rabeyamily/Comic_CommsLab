@@ -1,0 +1,505 @@
+/* ---- Reset & base ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family: 'Comic Neue', cursive;
+  background: #1c1c1c;
+  color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header & nav — comic style (sticky at top when scrolling) ---- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: #c41e3a;
+  border-bottom: 4px solid #0d0d0d;
+  box-shadow: 0 4px 0 #8b0000;
+  flex-wrap: wrap;
+}
+
+.header__name {
+  font-family: 'Bangers', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: #ffd700;
+  text-decoration: none;
+  text-shadow: 2px 2px 0 #0d0d0d;
+  transition: transform 0.15s ease;
+}
+.header__name:hover {
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.nav-link {
+  font-family: 'Bangers', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 2px 2px 0 #0d0d0d;
+  transition: transform 0.15s ease;
+}
+.nav-link:hover { transform: scale(1.08); }
+.nav-link--active {
+  color: #ffd700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+#home,
+#comic,
+#team {
+  scroll-margin-top: 4rem;
+}
+
+/* ---- Home (central block with space around for character cutouts) ---- */
+.home {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem 6rem;
+  box-sizing: border-box;
+}
+
+/* Add character cutouts around the central block (position absolute inside .home) */
+.home .home__cutout {
+  position: absolute;
+  max-width: 140px;
+  max-height: 140px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.home .home__cutout--top-left   { top: 1rem;   left: 1rem; }
+.home .home__cutout--top-right  { top: 1rem;   right: 1rem; }
+.home .home__cutout--bottom-left  { bottom: 1rem; left: 1rem; }
+.home .home__cutout--bottom-right { bottom: 1rem; right: 1rem; }
+
+.home__center {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.home__cover-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 9 / 4;
+  background: #2a2a2a;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 4px solid #0d0d0d;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  justify-self: end;
+}
+
+.home__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.home__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.home__cover-placeholder {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.home__title {
+  font-family: 'Bangers', cursive;
+  font-size: 2.25rem;
+  letter-spacing: 0.05em;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #0d0d0d;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.home__description {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #e8e2d4;
+  margin: 0 0 1.5rem;
+}
+
+.home .btn--cta {
+  display: inline-block;
+  text-decoration: none;
+  font-family: 'Bangers', cursive;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 1.75rem;
+  background: #c41e3a;
+  color: #fff;
+  border: 3px solid #0d0d0d;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 #0d0d0d;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.home .btn--cta:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #0d0d0d;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .home__center {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .home__cover-wrap {
+    justify-self: center;
+  }
+  .home__content {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* ---- Main comic area ---- */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem 1.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---- 3D page flip viewer (landscape panel, larger size) ---- */
+.comic-viewer {
+  width: 95%;
+  max-width: 1400px;
+  aspect-ratio: 9 / 4;
+  position: relative;
+  perspective: 1600px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.comic-viewer__book {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.comic-viewer__page {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.comic-viewer__page--current {
+  z-index: 2;
+  transform-origin: right center;
+}
+
+.comic-viewer__page--next {
+  z-index: 1;
+  transform-origin: left center;
+}
+
+/* Shared flip timing (same as Previous) */
+.comic-viewer__page--current,
+.comic-viewer--flip-prev .comic-viewer__page--next {
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Next: same flip style as Previous — current page turns away (hinge on right), next page stays put and is revealed */
+.comic-viewer--flip-next .comic-viewer__page--current {
+  transform: rotateY(-180deg);
+}
+
+.comic-viewer--flip-next .comic-viewer__page--next {
+  transform: none;
+}
+
+/* Previous: page (in next slot) folds in from the left and covers the view */
+.comic-viewer__page--next.flip-prev-initial {
+  transform: rotateY(-180deg);
+  transform-origin: left center;
+  transition: none;
+}
+
+.comic-viewer--flip-prev .comic-viewer__page--next {
+  z-index: 3;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+}
+
+/* ---- Comic page: landscape panel (white/cream, rounded, elevated shadow) ---- */
+.comic-page {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Rectangle placeholder for comic art (landscape, drop images in comic-images/ later) */
+.comic-page__placeholder {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 9 / 4;
+  background: #f5f0e6;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 1rem;
+  line-height: 1.3;
+}
+
+.comic-page__label {
+  font-family: 'Bangers', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: #c41e3a;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* ---- Controls: counter + Previous + Next in one row ---- */
+.comic-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.comic-controls__counter {
+  font-family: 'Bangers', cursive;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  color: #ffd700;
+  text-shadow: 1px 1px 0 #0d0d0d;
+}
+
+.btn {
+  font-family: 'Bangers', cursive;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1.25rem;
+  border: 3px solid #0d0d0d;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #ffd700;
+  color: #0d0d0d;
+  box-shadow: 3px 3px 0 #0d0d0d;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #0d0d0d;
+}
+
+.btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #0d0d0d;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--prev {
+  background: #fff;
+  color: #0d0d0d;
+}
+
+.btn--next {
+  background: #c41e3a;
+  color: #fff;
+  border-color: #0d0d0d;
+}
+
+.btn--next:hover:not(:disabled) {
+  background: #e02d4a;
+}
+
+/* ---- About the Team ---- */
+#team {
+  scroll-margin-top: 4rem;
+}
+
+.team {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.team--page {
+  min-height: 60vh;
+}
+
+.team__header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.team__title {
+  font-family: 'Bangers', cursive;
+  font-size: 2.5rem;
+  letter-spacing: 0.05em;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #0d0d0d;
+  margin: 0 0 0.5rem;
+}
+
+.team__intro {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.1rem;
+  color: #e8e2d4;
+  margin: 0;
+}
+
+.team__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  justify-items: center;
+  margin-top: 0;
+}
+
+.team-card {
+  width: 100%;
+  max-width: 280px;
+  background: #f5f0e6;
+  border: 4px solid #0d0d0d;
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 #0d0d0d;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.team-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #0d0d0d;
+}
+
+.team-card__photo-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 200px;
+  background: #e8e2d4;
+  border-bottom: 3px solid #0d0d0d;
+}
+
+.team-card__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.team-card__placeholder {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.team-card__name {
+  font-family: 'Bangers', cursive;
+  font-size: 1.55rem;
+  letter-spacing: 0.05em;
+  color: #c41e3a;
+  margin: 1rem 0.6rem 0.35rem;
+  line-height: 1.2;
+}
+
+.team-card__role {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.05rem;
+  color: #555;
+  margin: 0 0.6rem 0.35rem;
+}
+
+.team-card__description {
+  font-family: 'Comic Neue', cursive;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.45;
+  margin: 0 0.6rem 1.25rem;
+  text-align: left;
+}
