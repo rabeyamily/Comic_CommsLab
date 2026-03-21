@@ -45,10 +45,10 @@
   var isFlipping = false;  /* Prevents starting another flip before the current one finishes */
 
 
-    /**
+  /**
    * Render a single page into a container (currentContent or nextContent).
    * Builds: .comic-page > img + optional .comic-page__label.
-   */
+  */
   function renderPage(index, container) {
     if (index < 0 || index >= totalPages) return;
   
@@ -99,12 +99,6 @@
    * Flip to a given page index with animation.
    * @param {number} nextIndex - Target page index (0-based).
    * @param {'next'|'prev'} direction - Used to choose animation: next = current page turns away; prev = previous page flips in from left.
-   * @param {function} [onDone] - Optional callback when flip completes.
-   */
-  /**
-   * Flip to a given page index with animation.
-   * @param {number} nextIndex - Target page index (0-based).
-   * @param {'next'|'prev'} direction - Chooses animation: next = current turns away; prev = page flips in from left.
    * @param {function} [onDone] - Optional callback when flip completes.
    */
   function flipToPage(nextIndex, direction) {

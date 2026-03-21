@@ -270,8 +270,6 @@ body {
 }
 
 /* --- Next: current page turns away (like turning a page forward) --- */
-/* Script adds .comic-viewer--flip-next; current page (hinge right) rotates -180deg;
-   the next page sits behind (z-index 1) and is revealed as current turns */
 .comic-viewer--flip-next .comic-viewer__page--current {
   transform-origin: left center;   /* hinge on left edge instead of right */
   animation: pageFlipNext 0.6s forwards cubic-bezier(0.23, 1, 0.32, 1);
@@ -282,8 +280,6 @@ body {
 }
 
 /* --- Previous: previous page flips in from the left --- */
-/* Script puts previous page content in .page--next, adds flip-prev-initial (no transition),
-   then on next frame adds .comic-viewer--flip-prev so we animate from -180deg to 0deg */
 .comic-viewer__page--next.flip-prev-initial {
   transform: rotateY(-180deg);
   transform-origin: left center;
@@ -368,7 +364,7 @@ body {
 }
 
 .comic-page__image {
-  display: auto;
+  display: block;
   width: auto;
   height: auto;
   max-width: 100%;
