@@ -16,15 +16,15 @@
   /* ---------- Page definitions ---------- */
   /* id: used for logic; label: shown under the placeholder; placeholder: main text in the panel */
   var PAGES = [
-    { id: 'cover', label: 'Cover', placeholder: 'Cover — Don Midori vs Don Taichi' },
-    { id: 'scene1', label: 'Scene 1', placeholder: 'Exposition (rain)' },
-    { id: 'scene2-4', label: 'Scene 2–4', placeholder: 'Close-ups · Weapons Ready · Cat Feeder Countdown' },
-    { id: 'scene5-6', label: 'Scene 5–6', placeholder: 'Don Midori informed · Face-off' },
-    { id: 'scene7-8', label: 'Scene 7–8', placeholder: 'FIGHT!' },
-    { id: 'scene9', label: 'Scene 9', placeholder: 'Who gets picked up?' },
-    { id: 'scene10a', label: 'Scene 10A', placeholder: 'Don Midori picked up → Cuddles' },
-    { id: 'scene10b', label: 'Scene 10B', placeholder: 'Don Taichi picked up → Cuddles' },
-    { id: 'end', label: 'The End', placeholder: 'The End' }
+    { id: 'cover', label: 'Cover', image: 'comic-images/1.JPG' },
+    { id: 'scene1', label: 'Scene 1', image: 'comic-images/2.JPG' },
+    { id: 'scene2-4', label: 'Scene 2–4', image: 'comic-images/3.JPG' },
+    { id: 'scene5-6', label: 'Scene 5–6', image: 'comic-images/4.JPG' },
+    { id: 'scene7-8', label: 'Scene 7–8', image: 'comic-images/5.JPG' },
+    { id: 'scene9', label: 'Scene 9', image: 'comic-images/6.JPG' },
+    { id: 'scene10a', label: 'Scene 10A', image: 'comic-images/7.JPG'},
+    { id: 'scene10b', label: 'Scene 10B', image: 'comic-images/8.JPG'},
+    { id: 'end', label: 'The End', image: 'comic-images/9.JPG' }
   ];
 
   var totalPages = PAGES.length;
@@ -44,33 +44,47 @@
   var flipDuration = 600;  /* ms; must match CSS transition (0.6s) so we cleanup after animation ends */
   var isFlipping = false;  /* Prevents starting another flip before the current one finishes */
 
-  /**
+
+    /**
    * Render a single page into a container (currentContent or nextContent).
-   * Builds: .comic-page > .comic-page__placeholder (+ optional .comic-page__label).
-   */
-  /**
-   * Render a single page into a container (currentContent or nextContent).
-   * Builds: .comic-page > .comic-page__placeholder (+ optional .comic-page__label).
+   * Builds: .comic-page > img + optional .comic-page__label.
    */
   function renderPage(index, container) {
     if (index < 0 || index >= totalPages) return;
+  
     var page = PAGES[index];
     container.innerHTML = '';
+  
     var wrap = document.createElement('div');
     wrap.className = 'comic-page';
-    var box = document.createElement('div');
-    box.className = 'comic-page__placeholder';
-    box.textContent = page.placeholder;
-    wrap.appendChild(box);
+  
+    if (page.image) {
+      var img = document.createElement('img');
+      img.className = 'comic-page__image-wrap';
+      img.src = page.image;
+      img.alt = page.label || 'Comic page';
+  
+      // fallback if image fails
+      img.onerror = function () {
+        this.style.display = 'none';
+        var fallback = document.createElement('div');
+        fallback.className = 'comic-page__placeholder';
+        fallback.textContent = 'Image not found';
+        wrap.appendChild(fallback);
+      };
+  
+      wrap.appendChild(img);
+    }
+  
     if (page.label) {
       var label = document.createElement('div');
       label.className = 'comic-page__label';
       label.textContent = page.label;
       wrap.appendChild(label);
     }
+  
     container.appendChild(wrap);
   }
-
   /**
    * Update page counter and button disabled states.
    */
@@ -93,49 +107,48 @@
    * @param {'next'|'prev'} direction - Chooses animation: next = current turns away; prev = page flips in from left.
    * @param {function} [onDone] - Optional callback when flip completes.
    */
-  function flipToPage(nextIndex, direction, onDone) {
-    if (nextIndex < 0 || nextIndex >= totalPages || isFlipping) {
-      if (onDone) onDone();
-      return;
-    }
+  function flipToPage(nextIndex, direction) {
+    if (nextIndex < 0 || nextIndex >= totalPages || isFlipping) return;
+  
     isFlipping = true;
     updateUI();
+  
+    /* Always render target page fresh */
+    renderPage(nextIndex, nextContent);
+  
+    /* Keep nextContent invisible but ready for animation*/
+    pageNext.style.visibility = 'hidden';
+    
+    /* Trigger animation */
+    requestAnimationFrame(() => {
+      if (direction === 'next') {
+        viewer.classList.add('comic-viewer--flip-next');
+      } else {
+        pageNext.classList.add('flip-prev-initial');
+          requestAnimationFrame(() => {
+            viewer.classList.add('comic-viewer--flip-prev');
+          });
+      }
 
-    if (direction === 'next') {
-      /* --- Next: current page turns away (hinge right), next page is already in nextContent underneath --- */
-      renderPage(nextIndex, nextContent);  /* Pre-fill the "back" layer with next page */
-      viewer.classList.add('comic-viewer--flip-next');  /* CSS rotates current page -180deg */
-      setTimeout(function () {
-        viewer.classList.remove('comic-viewer--flip-next');
-        currentIndex = nextIndex;
-        renderPage(currentIndex, currentContent);  /* New current is what we just showed */
-        if (currentIndex + 1 < totalPages) renderPage(currentIndex + 1, nextContent);
-        else nextContent.innerHTML = '';
-        isFlipping = false;
-        updateUI();
-        if (onDone) onDone();
-      }, flipDuration);
-    } else {
-      /* --- Previous: previous page (in next slot) flips in from the left --- */
-      renderPage(nextIndex, nextContent);  /* Put previous page content in the "back" layer */
-      pageNext.classList.add('flip-prev-initial');  /* Position it at -180deg (folded left), no transition */
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          viewer.classList.add('comic-viewer--flip-prev');  /* Now animate to 0deg so it sweeps in */
-        });
-      });
-      setTimeout(function () {
-        viewer.classList.remove('comic-viewer--flip-prev');
-        pageNext.classList.remove('flip-prev-initial');
-        currentIndex = nextIndex;
-        renderPage(currentIndex, currentContent);
-        if (currentIndex + 1 < totalPages) renderPage(currentIndex + 1, nextContent);
-        else nextContent.innerHTML = '';
-        isFlipping = false;
-        updateUI();
-        if (onDone) onDone();
-      }, flipDuration);
-    }
+      /* Make nextContent visible after animation starts*/
+    pageNext.style.visibility = 'visible';
+    });
+  
+    setTimeout(function () {
+      /* Update index */
+      currentIndex = nextIndex;
+  
+      /* Copy what's already visible */
+      currentContent.innerHTML = nextContent.innerHTML;
+
+      /* Clean classes */
+      viewer.classList.remove('comic-viewer--flip-next');
+      viewer.classList.remove('comic-viewer--flip-prev');
+      pageNext.classList.remove('flip-prev-initial');
+  
+      isFlipping = false;
+      updateUI();
+    }, flipDuration);
   }
 
   /** Go to next page (if not at end). */
