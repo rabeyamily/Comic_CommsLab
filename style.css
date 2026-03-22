@@ -4,11 +4,10 @@
    ========================================================================== */
 
 /* ---- Reset & base ------------------------------------------------ */
-/* Box-sizing: width/height include padding and border (easier layout math) */
 *, *::before, *::after { box-sizing: border-box; }
 html {
   font-size: 16px;
-  scroll-behavior: smooth; /* Clicking #home, #comic, #team scrolls smoothly */
+  scroll-behavior: smooth;
 }
 body {
   margin: 0;
@@ -17,17 +16,17 @@ body {
   color: #1a1a1a;
   min-height: 100vh;
   display: flex;
-  flex-direction: column; /* Header, then main content stacks vertically */
+  flex-direction: column;
 }
 
-/* ---- Header & nav — comic style (sticky at top when scrolling) ---- */
+/* ---- Header & nav ------------------------------------------------ */
 .header {
   position: sticky;
   top: 0;
-  z-index: 100; /* Above other content when scrolling */
+  z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* App name left, nav links right */
+  justify-content: space-between;
   gap: 1.5rem;
   padding: 1rem 1.5rem;
   background: #c41e3a;
@@ -36,7 +35,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* App/site name in header; gold, links to #home */
 .header__name {
   font-family: 'Bangers', cursive;
   font-size: 1.5rem;
@@ -73,17 +71,15 @@ body {
   text-underline-offset: 4px;
 }
 
-/* When user clicks nav link, browser scrolls to #home/#comic/#team;
-   scroll-margin-top keeps the section title visible below the sticky header */
 #home,
 #comic,
 #team {
   scroll-margin-top: 4rem;
 }
 
-/* ---- Home (central block with space around for character cutouts) ---- */
+/* ---- Home -------------------------------------------------------- */
 .home {
-  position: relative; /* For absolute-positioned cutout images */
+  position: relative;
   width: 100%;
   min-height: 80vh;
   display: flex;
@@ -93,7 +89,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Optional character cutouts: position absolute in corners of .home */
 .home .home__cutout {
   position: absolute;
   max-width: 140px;
@@ -106,7 +101,6 @@ body {
 .home .home__cutout--bottom-left  { bottom: 1rem; left: 1rem; }
 .home .home__cutout--bottom-right { bottom: 1rem; right: 1rem; }
 
-/* Two-column layout: left = cover image, right = title + description + Start reading button */
 .home__center {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -116,7 +110,6 @@ body {
   width: 100%;
 }
 
-/* Wrapper for cover image; aspect-ratio keeps box shape before image loads */
 .home__cover-wrap {
   position: relative;
   width: 100%;
@@ -127,7 +120,7 @@ body {
   overflow: hidden;
   border: 4px solid #0d0d0d;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  justify-self: end; /* In grid: align this cell's content to the right (toward the text column) */
+  justify-self: end;
 }
 
 .home__content {
@@ -144,7 +137,6 @@ body {
   display: block;
 }
 
-/* Shown when cover image fails to load (onerror in HTML) */
 .home__cover-placeholder {
   display: none;
   position: absolute;
@@ -176,7 +168,6 @@ body {
   margin: 0 0 1.5rem;
 }
 
-/* Call-to-action: "Start reading" button */
 .home .btn--cta {
   display: inline-block;
   text-decoration: none;
@@ -197,23 +188,16 @@ body {
   color: #fff;
 }
 
-/* Home: stack columns on small screens */
 @media (max-width: 700px) {
   .home__center {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  .home__cover-wrap {
-    justify-self: center;
-  }
-  .home__content {
-    align-items: center;
-    text-align: center;
-  }
+  .home__cover-wrap { justify-self: center; }
+  .home__content { align-items: center; text-align: center; }
 }
 
-/* ---- Main comic area (section wrapper) ---- */
-/* Wraps the comic viewer + controls; flex:1 so it takes space between header and team section */
+/* ---- Main comic area --------------------------------------------- */
 .main {
   flex: 1;
   display: flex;
@@ -225,95 +209,81 @@ body {
   width: 100%;
 }
 
-/* ---- 3D page flip viewer (landscape panel) ---- */
+/* ---- 3D page flip viewer ----------------------------------------- */
 .comic-viewer {
   width: 95%;
   max-width: 1400px;
   aspect-ratio: 9 / 4;
   position: relative;
-  perspective: 1600px; /* 3D depth for flip */
+  perspective: 1600px;
   margin-bottom: 1.5rem;
-  overflow: hidden; /* Clip flipping page so it doesn't overflow */
+  overflow: hidden;
 }
 
 .comic-viewer__book {
   width: 100%;
   height: 100%;
   position: relative;
-  transform-style: preserve-3d; /* Required for 3D children */
+  transform-style: preserve-3d;
 }
 
-/* Each "page" is a full-size layer; one is current (top), one is next (behind) */
 .comic-viewer__page {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  backface-visibility: hidden; /* Hide back of page when rotated */
+  backface-visibility: hidden;
 }
 
-/* Current page: on top, hinges on right edge for "next" flip */
 .comic-viewer__page--current {
   z-index: 2;
   transform-origin: right center;
 }
 
-/* Next page: behind current; hinges on left edge for "prev" flip */
 .comic-viewer__page--next {
   z-index: 1;
   transform-origin: left center;
 }
 
-/* Shared flip transition (same easing for next and prev) */
 .comic-viewer__page--current,
 .comic-viewer--flip-prev .comic-viewer__page--next {
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* --- Next: current page turns away (like turning a page forward) --- */
 .comic-viewer--flip-next .comic-viewer__page--current {
-  transform-origin: left center;   /* hinge on left edge instead of right */
+  transform-origin: left center;
   animation: pageFlipNext 0.6s forwards cubic-bezier(0.23, 1, 0.32, 1);
 }
 .comic-viewer--flip-next .comic-viewer__page--next {
-  transform-origin: right center;  /* hinge on right edge */
+  transform-origin: right center;
   animation: pageFlipNextReveal 0.6s forwards cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* --- Previous: previous page flips in from the left --- */
 .comic-viewer__page--next.flip-prev-initial {
   transform: rotateY(-180deg);
   transform-origin: left center;
-  transition: none; /* Snapshot the starting state before we add the transition */
+  transition: none;
 }
 .comic-viewer--flip-prev .comic-viewer__page--next {
-  transform-origin: left center;    /* hinge on left edge */
+  transform-origin: left center;
   animation: pageFlipPrev 0.6s forwards cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Keyframes for flipping forward (next) */
 @keyframes pageFlipNext {
- 
-  0%   { transform: rotateY(0deg) rotateX(0deg); }
-  50%  { transform: rotateY(-90deg) rotateX(3deg); } /* slight bend at mid-flip */
+  0%   { transform: rotateY(0deg)    rotateX(0deg); }
+  50%  { transform: rotateY(-90deg)  rotateX(3deg); }
   100% { transform: rotateY(-180deg) rotateX(0deg); }
-
 }
 @keyframes pageFlipNextReveal {
   0%   { transform: rotateY(180deg); z-index: 1; }
-  100% { transform: rotateY(0deg); z-index: 1; }
+  100% { transform: rotateY(0deg);   z-index: 1; }
 }
-
-/* Keyframes for flipping backward (prev) */
 @keyframes pageFlipPrev {
   0%   { transform: rotateY(-180deg); z-index: 1; }
-  50%  { transform: rotateY(-90deg) rotateX(3deg); } /* slight bend at mid-flip */
-  100% { transform: rotateY(0deg); z-index: 1; }
+  50%  { transform: rotateY(-90deg) rotateX(3deg); }
+  100% { transform: rotateY(0deg);    z-index: 1; }
 }
 
-
-
-/* ---- Comic page (content inside each flip "page") ---- */
-/* White panel with rounded corners and shadow */
+/* ---- Comic page -------------------------------------------------- */
 .comic-page {
   width: 100%;
   height: 100%;
@@ -329,7 +299,6 @@ body {
   padding: 1rem;
 }
 
-/* Grey box with scene text; replace with <img> when using comic-images/ */
 .comic-page__placeholder {
   width: 100%;
   max-width: 100%;
@@ -371,6 +340,7 @@ body {
   max-height: 100%;
 }
 
+/* Label class kept in CSS in case it's needed later, but not rendered by JS */
 .comic-page__label {
   font-family: 'Bangers', cursive;
   font-size: 1.2rem;
@@ -383,7 +353,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ---- Comic controls: counter + Previous + Next in one row ---- */
+/* ---- Comic controls ---------------------------------------------- */
 .comic-controls {
   display: flex;
   flex-direction: row;
@@ -402,7 +372,7 @@ body {
   text-shadow: 1px 1px 0 #0d0d0d;
 }
 
-/* Base button (comic style: border, shadow) */
+/* ---- Base button ------------------------------------------------- */
 .btn {
   font-family: 'Bangers', cursive;
   font-size: 1.25rem;
@@ -430,24 +400,51 @@ body {
   transform: none;
 }
 
-/* Previous = neutral white/gray; Next = red to match header */
+/* Previous */
 .btn--prev {
   background: #fff;
   color: #0d0d0d;
 }
+
+/* Next */
 .btn--next {
   background: #c41e3a;
   color: #fff;
   border-color: #0d0d0d;
 }
-.btn--next:hover:not(:disabled) {
-  background: #e02d4a;
-}
+.btn--next:hover:not(:disabled) { background: #e02d4a; }
 
-/* ---- About the Team ---- */
-#team {
-  scroll-margin-top: 4rem;
+/* ---- Choice A — Don Midori (green) ------------------------------- */
+/* "Midori" means green in Japanese */
+.btn--choice-a {
+  background: #1e7a36;
+  color: #fff;
+  border-color: #0d0d0d;
+  font-size: 1.3rem;
 }
+.btn--choice-a:hover:not(:disabled) { background: #25993f; }
+
+/* ---- Choice B — Don Taichi (dark brown) -------------------------- */
+.btn--choice-b {
+  background: #3d1a00;
+  color: #fff;
+  border-color: #0d0d0d;
+  font-size: 1.3rem;
+}
+.btn--choice-b:hover:not(:disabled) { background: #5c2800; }
+
+/* ---- Restart ----------------------------------------------------- */
+.btn--restart {
+  background: #ffd700;
+  color: #0d0d0d;
+  border-color: #0d0d0d;
+  font-size: 1.3rem;
+  padding: 0.6rem 2rem;
+}
+.btn--restart:hover:not(:disabled) { background: #ffe94d; }
+
+/* ---- About the Team ---------------------------------------------- */
+#team { scroll-margin-top: 4rem; }
 
 .team {
   flex: 1;
@@ -457,11 +454,8 @@ body {
   padding: 2rem 1.5rem;
 }
 
-.team--page {
-  min-height: 60vh; /* Section has some height even with few cards */
-}
+.team--page { min-height: 60vh; }
 
-/* Title + intro line; then team__grid starts on the next row */
 .team__header {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -483,7 +477,6 @@ body {
   margin: 0;
 }
 
-/* Exactly four columns; cards centered in their column (justify-items: center) */
 .team__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -508,7 +501,6 @@ body {
   box-shadow: 6px 6px 0 #0d0d0d;
 }
 
-/* Square photo area; min-height keeps it from shrinking too much on narrow viewports */
 .team-card__photo-wrap {
   position: relative;
   width: 100%;
@@ -525,7 +517,6 @@ body {
   display: block;
 }
 
-/* Shown when teammate image fails to load */
 .team-card__placeholder {
   display: none;
   position: absolute;
