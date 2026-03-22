@@ -11,11 +11,11 @@
  * ── SOUND MAP ────────────────────────────────────────────────────────────
  *  Event                   │ File used
  * ─────────────────────────┼──────────────────────────────────────────────
- *  Site load (1st click)   │ breakzstudios-cine...vie-logo-185801.mp3
- *  Page flip (next/prev)   │ oxidvideos-page-flip...r-page-453027.mp3
+ *  Site load (1st click)   │ breakzstudios-cinematic-movie-logo-185801.mp3
+ *  Page flip (next/prev)   │ oxidvideos-page-flip-smaller-page-453027.mp3
  *  Button hover            │ universfield-cartoon-blinking-487897.mp3
  *  Home section active     │ liecio-calming-rain-257596.mp3  (loop)
- *  Comic section active    │ brvhrtz-action-loop-...brvhrtz-249496.mp3 (loop)
+ *  Comic section active    │ brvhrtz-action-loop-e-90-bpm-brvhrtz-233462.mp3 (loop)
  *  Team section active     │ dragon-studio-cat-purr-sfx-482870.mp3 (loop)
  *  Reaching last page      │ magiaz-cat-fighting-331254.mp3
  * ─────────────────────────────────────────────────────────────────────────
@@ -35,15 +35,12 @@
      Update any path here if the truncated filename doesn't match exactly.
      ===================================================================== */
   var SOUNDS = {
-    /* Verify these truncated filenames match your actual files: */
     intro:     'sounds/breakzstudios-cinematic-movie-logo-185801.mp3',
-    flip:      'sounds/oxidvideos-page-flip...r-page-453027.mp3',
-    actionBg:  'sounds/brvhrtz-action-loop-...brvhrtz-249496.mp3',
-    suspense:  'sounds/hgoliya08-suspense...-effect-287450.mp3',
-    cinHit:    'sounds/lordsonny-movie-cin...atic-hit-159852.mp3',
-    actionBg2: 'sounds/brvhrtz-action-loop-...brvhrtz-233462.mp3',
-
-    /* These full filenames are confirmed from screenshot: */
+    flip:      'sounds/oxidvideos-page-flip-smaller-page-453027.mp3',
+    actionBg:  'sounds/brvhrtz-action-loop-c-120-bpm-brvhrtz-249496.mp3',
+    suspense:  'sounds/hgoliya08-suspense-sound-effect-287450.mp3',
+    cinHit:    'sounds/lordsonny-movie-cinematic-hit-159852.mp3',
+    actionBg2: 'sounds/brvhrtz-action-loop-e-90-bpm-brvhrtz-233462.mp3',
     hover:     'sounds/universfield-cartoon-blinking-487897.mp3',
     rainBg:    'sounds/liecio-calming-rain-257596.mp3',
     purrBg:    'sounds/dragon-studio-cat-purr-sfx-482870.mp3',
