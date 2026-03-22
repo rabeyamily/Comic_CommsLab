@@ -6,134 +6,155 @@
 -->
 <html lang="en">
 <head>
-  <!-- Character encoding and viewport for responsive layout -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comic — Don Midori vs Don Taichi</title>
-  <!-- Preconnect to Google Fonts for faster font loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Comic-style fonts: Bangers (titles), Archivo Black (placeholders), Comic Neue (body) -->
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Archivo+Black&family=Comic+Neue:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Body is flex column: header stays at top, main content grows, sections stack vertically and are scrollable -->
 
-  <!-- ========== HEADER: Sticky bar with app name and nav links ========== -->
+  <!-- ========== HEADER ========== -->
   <header class="header">
-    <!-- App/site name; links to home; data-section used by nav script for active state -->
     <a href="#home" class="header__name" data-section="home">Don Midori vs Don Taichi</a>
     <nav class="nav">
-      <a href="#home" class="nav-link nav-link--active" data-section="home">Home</a>
-      <a href="#comic" class="nav-link" data-section="comic">Comic</a>
-      <a href="#team" class="nav-link" data-section="team">About the Team</a>
+      <a href="#home"  class="nav-link nav-link--active" data-section="home">Home</a>
+      <a href="#comic" class="nav-link"                  data-section="comic">Comic</a>
+      <a href="#team"  class="nav-link"                  data-section="team">About the Team</a>
     </nav>
+    <!-- Mute button injected here by script.js -->
   </header>
 
-  <!-- ========== HOME SECTION: Landing with cover, description, CTA ========== -->
+  <!-- ========== HOME SECTION ========== -->
   <section class="home" id="home" aria-label="Home">
-    <!-- Optional: add character cutout images with classes home__cutout home__cutout--top-left, --top-right, --bottom-left, --bottom-right -->
     <div class="home__center">
-      <!-- Cover image; fallback placeholder shown if comic-images/cover.jpg fails to load -->
       <div class="home__cover-wrap">
-        <!-- onerror: if image 404/fails, hide img and show sibling placeholder (display:flex) -->
-        <img class="home__cover" src="comic-images/1.jpg" alt="Cover — Don Midori vs Don Taichi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <img class="home__cover" src="comic-images/1.JPG" alt="Cover — Don Midori vs Don Taichi"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="home__cover-placeholder" aria-hidden="true">Cover image</div>
       </div>
       <div class="home__content">
         <h1 class="home__title">Don Midori vs Don Taichi</h1>
         <p class="home__description">
-          On a rain-soaked campus, rival cat gangs led by Don Midori and Don Taichi face off in a tense turf war. As paws twitch and claws flex, Midori asserts his authority and loyalty is tested when their food source is sabotaged. A fierce showdown erupts between the two gangs, only for the epic scene to collapse when a human student casually picks up one of the cats, revealing the absurd reality behind the mob-like standoff.
+          On a rain-soaked campus, rival cat gangs led by Don Midori and Don Taichi face off in a tense turf war.
+          As paws twitch and claws flex, Midori asserts his authority and loyalty is tested when their food source
+          is sabotaged. A fierce showdown erupts between the two gangs, only for the epic scene to collapse when
+          a human student casually picks up one of the cats, revealing the absurd reality behind the mob-like standoff.
         </p>
         <a href="#comic" class="btn btn--cta">Start reading</a>
       </div>
     </div>
   </section>
 
-  <!-- ========== COMIC SECTION: Page flip viewer and controls ========== -->
+  <!-- ========== COMIC SECTION ========== -->
   <main class="main" id="comic">
-    <!-- Viewer: two "pages" (current + next) for 3D flip animation -->
     <div class="comic-viewer" id="comicViewer">
       <div class="comic-viewer__book">
-        <!-- Top/front page (animates away on Next, or stays when going Prev) -->
         <div class="comic-viewer__page comic-viewer__page--current" id="pageCurrent">
           <div class="comic-page" id="currentContent"></div>
         </div>
-        <!-- Back page (holds next or previous content during flips) -->
         <div class="comic-viewer__page comic-viewer__page--next" id="pageNext">
           <div class="comic-page" id="nextContent"></div>
         </div>
       </div>
     </div>
 
-    <!-- Page counter and Previous/Next buttons -->
-    <!-- Counter and buttons filled/updated by script.js -->
+    <!--
+      Controls footer.
+      Button visibility is managed entirely by script.js (renderControls).
+
+      Layout by page:
+        Cover (0)      → [counter]  [Next]
+        Scenes (1–5)   → [counter]  [Previous]  [Next]
+        Choice (6)     → [counter]  [Previous]  [ Don Midori]  [ Don Taichi]
+        Endings (7–8)  →            [↺ Restart]
+    -->
     <footer class="comic-controls">
-      <span class="comic-controls__counter"><span id="currentPageNum">1</span> of <span id="totalPages">9</span></span>
-      <button type="button" class="btn btn--prev" id="btnPrev" disabled aria-label="Previous page">Previous</button>
-      <button type="button" class="btn btn--next" id="btnNext" aria-label="Next page">Next</button>
+      <span class="comic-controls__counter">
+        <span id="currentPageNum">1</span> of <span id="totalPages">9</span>
+      </span>
+
+      <!-- Linear navigation -->
+      <button type="button" class="btn btn--prev"    id="btnPrev"    disabled aria-label="Previous page">Previous</button>
+      <button type="button" class="btn btn--next"    id="btnNext"            aria-label="Next page">Next</button>
+
+      <!-- Choice buttons (hidden until page 6) -->
+      <button type="button" class="btn btn--choice-a" id="btnChoiceA" style="display:none" aria-label="Choose Don Midori"> Don Midori</button>
+      <button type="button" class="btn btn--choice-b" id="btnChoiceB" style="display:none" aria-label="Choose Don Taichi"> Don Taichi</button>
+
+      <!-- Restart (hidden until endings) -->
+      <button type="button" class="btn btn--restart"  id="btnRestart" style="display:none" aria-label="Restart comic">↺ Restart</button>
     </footer>
   </main>
 
-  <!-- ========== ABOUT THE TEAM: Four team cards in one row ========== -->
+  <!-- ========== ABOUT THE TEAM ========== -->
   <section class="team team--page" id="team" aria-label="About the Team">
     <div class="team__header">
       <h1 class="team__title">About the Team</h1>
       <p class="team__intro">The crew behind Don Midori vs Don Taichi.</p>
     </div>
     <div class="team__grid">
-      <!-- Team card 1: photo from teammate-images/; onerror shows "Photo" placeholder -->
+
+      <!-- Team card 1: Mily -->
       <article class="team-card">
         <div class="team-card__photo-wrap">
-          <img class="team-card__photo" src="teammate-images/mily.jpg" alt="Mily" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <img class="team-card__photo" src="teammate-images/mily.jpg" alt="Mily"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
           <div class="team-card__placeholder" aria-hidden="true">Photo</div>
         </div>
         <h2 class="team-card__name">Rabeya Zahan Mily</h2>
         <p class="team-card__role">Role</p>
         <p class="team-card__description">Short bio or description for this team member. Replace with a sentence or two about their contribution to the comic.</p>
       </article>
+
+      <!-- Team card 2: Zeina -->
       <article class="team-card">
         <div class="team-card__photo-wrap">
-          <img class="team-card__photo" src="teammate-images/zeina.g" alt="Zeina" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <img class="team-card__photo" src="teammate-images/zeina.png" alt="Zeina"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
           <div class="team-card__placeholder" aria-hidden="true">Photo</div>
         </div>
         <h2 class="team-card__name">Zeina Khadem</h2>
         <p class="team-card__role">Role</p>
         <p class="team-card__description">Short bio or description for this team member. Replace with a sentence or two about their contribution to the comic.</p>
       </article>
+
+      <!-- Team card 3: Alwin -->
       <article class="team-card">
         <div class="team-card__photo-wrap">
-          <img class="team-card__photo" src="teammate-images/member3.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <img class="team-card__photo" src="teammate-images/alwin.png" alt="Alwin"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
           <div class="team-card__placeholder" aria-hidden="true">Photo</div>
         </div>
-        <h2 class="team-card__name">Team Member 3</h2>
-        <p class="team-card__role">Role</p>
-        <p class="team-card__description">Short bio or description for this team member. Replace with a sentence or two about their contribution to the comic.</p>
+        <h2 class="team-card__name">Alwin</h2>
+        <p class="team-card__role">Website Designer</p>
+        <p class="team-card__description">Sophomore majoring in CS. Helped design the website, fix errors and add sounds.</p>
       </article>
+
+      <!-- Team card 4: placeholder -->
       <article class="team-card">
         <div class="team-card__photo-wrap">
-          <img class="team-card__photo" src="teammate-images/member4.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <img class="team-card__photo" src="teammate-images/member4.jpg" alt=""
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
           <div class="team-card__placeholder" aria-hidden="true">Photo</div>
         </div>
         <h2 class="team-card__name">Team Member 4</h2>
         <p class="team-card__role">Role</p>
         <p class="team-card__description">Short bio or description for this team member. Replace with a sentence or two about their contribution to the comic.</p>
       </article>
+
     </div>
   </section>
 
-  <!-- Comic viewer logic: page data, flip animations, prev/next -->
   <script src="script.js"></script>
-  <!--
-    Nav active state: (1) on hash change, set active from URL hash (#home, #comic, #team).
-    (2) On scroll, find which section is in view (offsetTop - headerOffset <= scrollY) and set active to that.
-    passive: true = scroll listener doesn't call preventDefault, better for scroll performance.
-  -->
+
+  <!-- Nav active state on scroll / hash change -->
   <script>
     (function () {
       function setActiveNav() {
-        var hash = window.location.hash.slice(1) || 'home';
+        var hash  = window.location.hash.slice(1) || 'home';
         var links = document.querySelectorAll('.nav-link[data-section]');
         links.forEach(function (link) {
           link.classList.toggle('nav-link--active', link.getAttribute('data-section') === hash);
@@ -141,15 +162,14 @@
       }
       window.addEventListener('hashchange', setActiveNav);
       window.addEventListener('scroll', function () {
-        var sections = [
-          { id: 'home', el: document.getElementById('home') },
+        var sections     = [
+          { id: 'home',  el: document.getElementById('home')  },
           { id: 'comic', el: document.getElementById('comic') },
-          { id: 'team', el: document.getElementById('team') }
+          { id: 'team',  el: document.getElementById('team')  },
         ];
-        var headerOffset = 80; /* Approximate sticky header height for "in view" check */
-        var scrollY = window.scrollY || window.pageYOffset;
-        var current = 'home';
-        /* Last section whose top is above scroll position becomes "current" */
+        var headerOffset = 80;
+        var scrollY      = window.scrollY || window.pageYOffset;
+        var current      = 'home';
         sections.forEach(function (s) {
           if (s.el && s.el.offsetTop - headerOffset <= scrollY) current = s.id;
         });
@@ -161,5 +181,6 @@
       setActiveNav();
     })();
   </script>
+
 </body>
 </html>
