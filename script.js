@@ -11,11 +11,14 @@
  *   6 → 7.JPG  CHOICE SCREEN  (cat fight — pick the winner)
  *   7 → 8.JPG  Don Midori wins  (Choice A)
  *   8 → 9.JPG  Don Taichi wins  (Choice B)
+ *   8 → 11.JPG  Don Midori wins  (Choice A)
+ *   9 → 10.JPG  Don Taichi wins  (Choice B)
  *
  * Branching logic:
  *   Pages 0–5 : linear (Previous / Next)
  *   Page 6    : choice screen → Previous | Don Midori | Don Taichi
- *   Pages 7–8 : endings → Restart only
+ *   Pagw 7-8: linear again
+ *   Pages 20–11 : endings → Restart only
  *
  * Sound map:
  *   First interaction   → intro cinematic hit
@@ -186,8 +189,10 @@
 
   /* Branch indices */
   var CHOICE_INDEX = 6;   /* 7.JPG — choice screen, cat fight */
-  var END_A_INDEX  = 7;   /* 8.JPG — Don Midori wins          */
-  var END_B_INDEX  = 8;   /* 9.JPG — Don Taichi wins          */
+  var RESULT_A_INDEX = 7; /* 8.JPG — Don Midori wins          */
+  var RESULT_B_INDEX = 8; /* 10.JPG — Don Taichi wins          */
+  var END_A_INDEX  = 9;   /* 10.JPG — Don Midori wins          */
+  var END_B_INDEX  = 10;   /* 11.JPG — Don Taichi wins          */
 
   var PAGES = [
     { id: 'cover',   image: 'comic-images/1.JPG' },
@@ -197,8 +202,10 @@
     { id: 'scene4',  image: 'comic-images/5.JPG' },
     { id: 'scene5',  image: 'comic-images/6.JPG' },
     { id: 'choice',  image: 'comic-images/7.JPG' },  /* cat fight — choose winner */
-    { id: 'endA',    image: 'comic-images/8.JPG' },  /* Don Midori wins           */
-    { id: 'endB',    image: 'comic-images/9.JPG' },  /* Don Taichi wins           */
+    { id: 'resultA',    image: 'comic-images/8.JPG' },  /* Don Midori wins           */
+    { id: 'resultB',    image: 'comic-images/9.JPG' },  /* Don Taichi wins           */
+    { id: 'endA',    image: 'comic-images/11.JPG' },  /* Don Midori wins, final page         */
+    { id: 'endB',    image: 'comic-images/10.JPG' },  /* Don Taichi wins, final page           */
   ];
 
   var totalPages   = PAGES.length;
@@ -255,7 +262,8 @@
    *  Cover (0)      → Next only
    *  Scenes (1–5)   → Previous + Next
    *  Choice (6)     → Previous + Don Midori + Don Taichi
-   *  Endings (7–8)  → Restart only  (counter hidden)
+   *  Scenes (7-9)   → Previous + Next
+   *  Endings (10–11)  → Restart only  (counter hidden)
    */
   function renderControls() {
     var isChoice  = currentIndex === CHOICE_INDEX;
@@ -327,13 +335,28 @@
     }, flipDuration);
   }
 
-  /* Linear navigation (pages 0–6 only) */
-  function goNext() { if (currentIndex < CHOICE_INDEX) flipToPage(currentIndex + 1, 'next'); }
-  function goPrev() { if (currentIndex > 0 && currentIndex <= CHOICE_INDEX) flipToPage(currentIndex - 1, 'prev'); }
+  /* Linear navigation (pages 0–6, 7-8) */
+  function goNext() {
+    if (currentIndex === RESULT_A_INDEX) {
+      flipToPage(END_A_INDEX, 'next');
+    } else if (currentIndex === RESULT_B_INDEX) {
+      flipToPage(END_B_INDEX, 'next');
+    } else if (currentIndex < CHOICE_INDEX) {
+      flipToPage(currentIndex + 1, 'next');
+    }
+  }
+
+  function goPrev() {
+    if (currentIndex === RESULT_A_INDEX || currentIndex === RESULT_B_INDEX) {
+      flipToPage(CHOICE_INDEX, 'prev');
+    } else if (currentIndex > 0 && currentIndex <= CHOICE_INDEX) {
+      flipToPage(currentIndex - 1, 'prev');
+    }
+  }
 
   /* Branching choices on page 6 */
-  function goChoiceA() { flipToPage(END_A_INDEX, 'next'); }  /* Don Midori wins */
-  function goChoiceB() { flipToPage(END_B_INDEX, 'next'); }  /* Don Taichi wins */
+  function goChoiceA() { flipToPage(RESULT_A_INDEX, 'next'); }  /* Don Midori wins */
+  function goChoiceB() { flipToPage(RESULT_B_INDEX, 'next'); }  /* Don Taichi wins */
 
   /* Restart — flips back to the cover */
   function restart() { flipToPage(0, 'prev'); }
